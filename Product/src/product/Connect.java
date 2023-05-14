@@ -145,17 +145,16 @@ public class Connect {
         return null;
     }
     
-    public ArrayList<Product> displayProduct(String productname){
+    public ArrayList<Product> displayProduct(){
         ArrayList<Product> prod = new ArrayList<Product>();
-        String sql ="SELECT * FROM `product` where name='"+productname+"'";
+        String sql ="SELECT * FROM `product`";
         try {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
             while(rs.next()){
               Product p = new Product(rs.getString(2),rs.getInt(4),rs.getInt(5));
               prod.add(p);
-            }
-            
+            }         
         } catch (SQLException ex) {
             Logger.getLogger(Connect.class.getName()).log(Level.SEVERE, null, ex);
         }

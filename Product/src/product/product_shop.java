@@ -17,26 +17,26 @@ public class product_shop extends javax.swing.JFrame {
      * Creates new form product_shop
      */
     DefaultTableModel tbl;
-    Connect conn = null;
-    product_shop mainGui;
+    Connect conn = new Connect();
     
     public product_shop(String productname) {
         initComponents();
         tbl = (DefaultTableModel) online_shop.getModel();
-        conn = new Connect();
-        displayTable(productname);
+        displayTable();
+        System.out.print("blub");
     }
     
     public product_shop() {
         initComponents();
-        mainGui = new product_shop("Phone");
-        mainGui.show();
+        tbl = (DefaultTableModel) online_shop.getModel();
+        displayTable();
+        System.out.print("blubblub");
     }
     
-    public final void displayTable(String productname){
-        ArrayList<Product> prod = conn.displayProduct(productname);
+    public final void displayTable(){
+        ArrayList<Product> prod = conn.displayProduct();
         for(Product p : prod){
-            String data[]={String.valueOf(p.getPrice()),String.valueOf(p.getQuantity())};
+            String data[]={p.getName(),String.valueOf(p.getPrice()),String.valueOf(p.getQuantity())};
             tbl.addRow(data);
         }
     }
@@ -57,12 +57,12 @@ public class product_shop extends javax.swing.JFrame {
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
-        product_name5 = new javax.swing.JTextField();
+        product_name = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         online_shop = new javax.swing.JTable();
+        displaybtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(800, 560));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 252, 246));
@@ -160,23 +160,21 @@ public class product_shop extends javax.swing.JFrame {
                 .addContainerGap(340, Short.MAX_VALUE))
         );
 
-        product_name5.setText("Search"); // NOI18N
-        product_name5.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(57, 66, 60), 1, true));
-        product_name5.setMargin(new java.awt.Insets(2, 10, 2, 6));
-        product_name5.addActionListener(new java.awt.event.ActionListener() {
+        product_name.setText("Search"); // NOI18N
+        product_name.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(57, 66, 60), 1, true));
+        product_name.setMargin(new java.awt.Insets(2, 10, 2, 6));
+        product_name.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                product_name5ActionPerformed(evt);
+                product_nameActionPerformed(evt);
             }
         });
 
         online_shop.setBackground(new java.awt.Color(255, 252, 246));
+        online_shop.setFont(new java.awt.Font("Tw Cen MT", 0, 18)); // NOI18N
         online_shop.setForeground(new java.awt.Color(0, 0, 0));
         online_shop.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Product", "Price", "Available"
@@ -198,7 +196,19 @@ public class product_shop extends javax.swing.JFrame {
             }
         });
         online_shop.setShowGrid(false);
+        online_shop.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                online_shopMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(online_shop);
+
+        displaybtn.setText("Enter");
+        displaybtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                displaybtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -208,19 +218,26 @@ public class product_shop extends javax.swing.JFrame {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(product_name5, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(38, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(product_name, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(displaybtn, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(42, 42, 42)
-                .addComponent(product_name5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(product_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(displaybtn, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1)
-                .addGap(21, 21, 21))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addGap(83, 83, 83))
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 560));
@@ -244,9 +261,20 @@ public class product_shop extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton11ActionPerformed
 
-    private void product_name5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_product_name5ActionPerformed
+    private void product_nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_product_nameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_product_name5ActionPerformed
+    }//GEN-LAST:event_product_nameActionPerformed
+
+    private void displaybtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displaybtnActionPerformed
+        // TODO add your handling code here:
+        tbl = (DefaultTableModel) online_shop.getModel();
+        displayTable();
+    }//GEN-LAST:event_displaybtnActionPerformed
+
+    private void online_shopMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_online_shopMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_online_shopMouseClicked
 
     /**
      * @param args the command line arguments
@@ -284,6 +312,7 @@ public class product_shop extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton displaybtn;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton8;
@@ -293,7 +322,7 @@ public class product_shop extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable online_shop;
-    private javax.swing.JTextField product_name5;
+    private javax.swing.JTextField product_name;
     // End of variables declaration//GEN-END:variables
 
 }
